@@ -1,0 +1,47 @@
+openapi: "3.0.2"
+info:
+  title: API analyzer enade SI
+  version: "1.0"
+paths:
+  /ies:
+    get:
+      tags:
+        - /ies
+      description: >-
+        Get the IES list with code!
+      responses:
+        "200":
+          description: Successful request.
+          content:
+            application/json:
+              
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ies"
+        default:
+          description: Invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+servers:
+  - url: "/api"
+components:
+  schemas:
+    ies:
+      properties:
+        code:
+          type: integer
+        name:
+          type: string
+      required:
+        - "code"
+        - "name"
+    Error:
+      properties:
+        message:
+          type: string
+      required:
+        - message
