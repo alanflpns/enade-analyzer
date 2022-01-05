@@ -9,11 +9,16 @@ import {
 } from "./config/api";
 import { DatabaseMongooseFactory } from "./config/factories/database.factory";
 import { IesControllerFactory } from "./config/factories/ies.controller.factory";
+import { MicrodataControllerFactory } from "./config/factories/microdata.controller.factory";
 import "./config/logger";
 
 const app = new App({
   port: Number(process.env.PORT) || 3000,
-  controllers: [new HealthController(), IesControllerFactory.create()],
+  controllers: [
+    new HealthController(),
+    IesControllerFactory.create(),
+    MicrodataControllerFactory.create(),
+  ],
   customizers: [swaggerAppCustomizer, validationAppCustomizer],
   database: DatabaseMongooseFactory.create(),
   middleWares: [

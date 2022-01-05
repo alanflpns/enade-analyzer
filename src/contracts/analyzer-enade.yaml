@@ -14,11 +14,25 @@ paths:
           description: Successful request.
           content:
             application/json:
-              
               schema:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/ies"
+  /microdata:
+    get:
+      tags:
+        - /microdata
+      description: >-
+        Get the Microdata rearranged!
+      responses:
+        "200":
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/data_rearranged"
         default:
           description: Invalid request.
           content:
@@ -31,6 +45,19 @@ servers:
 components:
   schemas:
     ies:
+      properties:
+        cod_ies:
+          type: integer
+        sigla:
+          type: string
+        municipio:
+          type: string
+        uf:
+          type: string
+      required:
+        - "sigla"
+        - "cod_ies"
+    data_rearranged:
       properties:
         cod_ies:
           type: integer
