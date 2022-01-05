@@ -42,6 +42,16 @@ paths:
                 type: "array"
                 items:
                   type: object
+                  properties:
+                    tema:
+                      type: string
+                    questions:
+                      type: array
+                      items:
+                        type: number
+                    qtQuestions:
+                      type: number
+
   /result-enade-general:
     get:
       tags:
@@ -97,8 +107,7 @@ components:
         result:
           type: array
           items:
-            type:
-              object
+            type: object
         tema:
           type: string
       required:

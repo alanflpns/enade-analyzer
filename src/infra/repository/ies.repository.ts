@@ -17,10 +17,18 @@ export class IesRepository implements IIesRepository {
           $group: {
             _id: "$tema",
             questions: { $push: "$questao" },
-            qtQuestions: {$sum: 1}
+            qtQuestions: { $sum: 1 },
           },
         },
-      ]).toArray();
+        {
+          $project: {
+            tema: "$_id",
+            questions: 1,
+            qtQuestions: 1,
+          },
+        },
+      ])
+      .toArray();
     return result;
   }
   async getIes(query: Object) {
