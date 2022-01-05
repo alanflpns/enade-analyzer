@@ -23,20 +23,15 @@ export class MicrodataService {
 
     const objresult = result.map((item) => {
       //@ts-ignore
-      item.result.map((result) => {
-        if (result.resposta === undefined) {
-          //@ts-ignore
-          item.total = item.total - result.count;
-        }
-      });
-      //@ts-ignore
       item.result = item.result.map((result) => {
-        if (result.resposta !== undefined) {
           //@ts-ignore
           result.percent = Number(result.count / item.total).toFixed(3);
-        }
-        return result;
+          return result;
       });
+      //@ts-ignore
+      item.tema = item._id;
+      //@ts-ignore
+      delete item._id
       return item;
     });
     return objresult;

@@ -92,15 +92,18 @@ components:
         - "cod_ies"
     general_data:
       properties:
-        count:
+        total:
           type: integer
-        resposta:
-          type: boolean
+        result:
+          type: array
+          items:
+            type:
+              object
         tema:
           type: string
       required:
-        - "count"
         - "tema"
+        - "result"
     Error:
       properties:
         message:

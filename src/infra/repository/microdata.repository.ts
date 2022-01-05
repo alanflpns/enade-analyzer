@@ -48,6 +48,10 @@ export class MicrodataRepository implements IMicrodataRepository {
               $sum: 1,
             },
           },
+        },{
+          $match: {
+            "_id.resposta": {$ne: undefined}
+          }
         },
         {
           $lookup: {
