@@ -20,6 +20,25 @@ export class MicrodataService {
       CO_IES: { $in: cod_ies_arr },
     };
     const result = await this.repository.getMicrodataResume(query);
-    return result;
+
+    const objresult = result.map((item) => {
+      //@ts-ignore
+      item.result.map((result) => {
+        if (result.resposta === undefined) {
+          //@ts-ignore
+          item.total = item.total - result.count;
+        }
+      });
+      //@ts-ignore
+      item.result = item.result.map((result) => {
+        if (result.resposta !== undefined) {
+          //@ts-ignore
+          result.percent = Number(result.count / item.total).toFixed(3);
+        }
+        return result;
+      });
+      return item;
+    });
+    return objresult;
   }
 }

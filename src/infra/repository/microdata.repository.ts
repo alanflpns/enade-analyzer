@@ -8,38 +8,41 @@ export class MicrodataRepository implements IMicrodataRepository {
     this.db = db;
   }
   async getMicrodataResume(query: Object): Promise<IMicrodata[]> {
-    const microdataId2017 = (
-      await this.db
-        .collection("microdata_enade_2017")
-        .aggregate([
-          {
-            $match: {
-              ...query,
-              //CO_GRUPO é o curso de sistemas de informação
-              //TP_PR é o tipo de presença do aluno, código 555 significa que o resultado da prova dele é válido
-              CO_GRUPO: 4006,
-              TP_PR_OB_CE: 555,
-              TP_PR_GER: 555,
-              TP_PRES: 555,
-            },
-          },
-        ])
-        .toArray()
-    ).map((item) => item._id);
-
     const result = await this.db
-      .collection("respostas_enade_2017")
+      .collection("microdata_enade_2017")
       .aggregate([
         {
           $match: {
-            microdataId: { $in: microdataId2017 },
+            ...query,
+            //CO_GRUPO é o curso de sistemas de informação
+            //TP_PR é o tipo de presença do aluno, código 555 significa que o resultado da prova dele é válido
+            CO_GRUPO: 4006,
+            TP_PR_OB_CE: 555,
+            TP_PR_GER: 555,
+            TP_PRES: 555,
           },
+        },
+        {
+          $project: {
+            _id: 1,
+          },
+        },
+        {
+          $lookup: {
+            from: "respostas_enade_2017",
+            localField: "_id",
+            foreignField: "microdataId",
+            as: "respostas_2017",
+          },
+        },
+        {
+          $unwind: "$respostas_2017",
         },
         {
           $group: {
             _id: {
-              questao: "$questao",
-              resposta: "$resposta",
+              questao: "$respostas_2017.questao",
+              resposta: "$respostas_2017.resposta",
             },
             count: {
               $sum: 1,
