@@ -7,12 +7,13 @@ export class MicrodataRepository implements IMicrodataRepository {
   constructor(db: Connection) {
     this.db = db;
   }
-  async getMicrodataResume(): Promise<IMicrodata[]> {
+  async getMicrodataResume(query: Object): Promise<IMicrodata[]> {
     const microdataId2017 = (
       await this.db
         .collection("microdata_enade_2017")
         .find(
           {
+            ...query,
             //CO_GRUPO é o curso de sistemas de informação
             //TP_PR é o tipo de presença do aluno, código 555 significa que o resultado da prova dele é válido
             CO_GRUPO: 4006,

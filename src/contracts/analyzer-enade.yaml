@@ -33,6 +33,15 @@ paths:
         - /result-enade-general
       description: >-
         Get the general result of enade!
+      parameters:
+        - in: query
+          name: uf
+          schema:
+            type: string
+        - in: query
+          name: cod_ies
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful request.
