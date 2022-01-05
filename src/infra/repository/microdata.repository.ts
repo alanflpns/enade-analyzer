@@ -83,9 +83,15 @@ export class MicrodataRepository implements IMicrodataRepository {
           },
         },
         {
-          $sort: {
-            tema: 1,
-            count: -1,
+          $group: {
+            _id: "$tema",
+            result: {
+              $push: {
+                resposta: "$resposta",
+                count: "$count"
+              }
+            },
+            total: {$sum: "$count"}
           },
         },
       ])
