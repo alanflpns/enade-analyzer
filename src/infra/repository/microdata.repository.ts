@@ -47,14 +47,12 @@ export class MicrodataRepository implements IMicrodataRepository {
             count: {
               $sum: 1,
             },
-            questao: { $first: "$questao" },
-            resposta: { $first: "$resposta" },
           },
         },
         {
           $lookup: {
             from: "tema_questao_2017",
-            localField: "questao",
+            localField: "_id.questao",
             foreignField: "questao",
             as: "tema",
           },
@@ -66,25 +64,17 @@ export class MicrodataRepository implements IMicrodataRepository {
           $group: {
             _id: {
               tema: "$tema.tema",
-              resposta: "$resposta",
+              resposta: "$_id.resposta",
             },
             count: {
               $sum: "$count",
             },
-            resposta: { $first: "$resposta" },
-          },
-        },
-        {
-          $project: {
-            resposta: 1,
-            count: 1,
-            tema: "$_id.tema",
-            _id: 0,
+            resposta: { $first: "$_id.resposta" },
           },
         },
         {
           $group: {
-            _id: "$tema",
+            _id: "$_id.tema",
             result: {
               $push: {
                 resposta: "$resposta",
