@@ -18,12 +18,12 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/ies"
-  /microdata:
+  /result-enade-general:
     get:
       tags:
-        - /microdata
+        - /result-enade-general
       description: >-
-        Get the Microdata rearranged!
+        Get the general result of enade!
       responses:
         "200":
           description: Successful request.
@@ -32,7 +32,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/data_rearranged"
+                  $ref: "#/components/schemas/general_data"
         default:
           description: Invalid request.
           content:
@@ -57,19 +57,17 @@ components:
       required:
         - "sigla"
         - "cod_ies"
-    data_rearranged:
+    general_data:
       properties:
-        cod_ies:
+        count:
           type: integer
-        sigla:
-          type: string
-        municipio:
-          type: string
-        uf:
+        resposta:
+          type: boolean
+        tema:
           type: string
       required:
-        - "sigla"
-        - "cod_ies"
+        - "count"
+        - "tema"
     Error:
       properties:
         message:

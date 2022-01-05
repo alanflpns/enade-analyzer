@@ -6,6 +6,6 @@ import { MicrodataRepository } from "../../infra/repository/microdata.repository
 
 export class MicrodataControllerFactory {
   static create(): IController {
-    return new MicrodataController(new MicrodataService(new MicrodataRepository(MicrodataModel)));
+    return new MicrodataController(new MicrodataService(new MicrodataRepository(MicrodataModel.db)));
   }
 }

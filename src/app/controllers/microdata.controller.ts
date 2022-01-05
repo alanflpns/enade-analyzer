@@ -13,7 +13,7 @@ export class MicrodataController implements IController {
   }
 
   public initRoutes() {
-    this.router.get("/api/microdata", this.getMicrodataResume);
+    this.router.get("/api/result-enade-general", this.getMicrodataResume);
   }
 
   public getRoutes(): Router {
