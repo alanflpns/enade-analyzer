@@ -1,6 +1,4 @@
-import { Logger } from "traceability";
-
-import IIesRepository from "./repository/ies.repository.interface";
+import IIesRepository from "./interfaces/ies.repository.interface";
 
 export class IesService {
   repository: IIesRepository;
