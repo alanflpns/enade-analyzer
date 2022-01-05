@@ -32,13 +32,17 @@ components:
   schemas:
     ies:
       properties:
-        code:
+        cod_ies:
           type: integer
-        name:
+        sigla:
+          type: string
+        municipio:
+          type: string
+        uf:
           type: string
       required:
-        - "code"
-        - "name"
+        - "sigla"
+        - "cod_ies"
     Error:
       properties:
         message:

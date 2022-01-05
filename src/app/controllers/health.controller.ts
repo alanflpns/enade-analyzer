@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import express, { Request, Response, Router } from "express";
 import { IController } from "./controller.interface";
 import { name, version } from "./../../../package.json";
