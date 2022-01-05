@@ -63,17 +63,9 @@ export class MicrodataRepository implements IMicrodataRepository {
           $unwind: "$tema",
         },
         {
-          $project: {
-            questao: 1,
-            resposta: 1,
-            count: 1,
-            tema: "$tema.tema",
-          },
-        },
-        {
           $group: {
             _id: {
-              tema: "$tema",
+              tema: "$tema.tema",
               resposta: "$resposta",
             },
             count: {
