@@ -14,6 +14,7 @@ export class IesController implements IController {
 
   public initRoutes() {
     this.router.get("/api/ies", this.getIesList);
+    this.router.get("/api/questions-theme", this.getQuestionsTheme);
   }
 
   public getRoutes(): Router {
@@ -26,6 +27,10 @@ export class IesController implements IController {
       uf,
       cod_ies,
     });
+    res.send(result);
+  };
+  getQuestionsTheme = async (req: Request, res: Response) => {
+    const result = await this.service.getQuestionsTheme();
     res.send(result);
   };
 }

@@ -27,6 +27,21 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/ies"
+  /questions-theme:
+    get:
+      tags:
+        - /questions-theme
+      description: >-
+        Get the theme of questions!
+      responses:
+        "200":
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: object
   /result-enade-general:
     get:
       tags:

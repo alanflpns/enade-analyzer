@@ -14,4 +14,8 @@ export class IesService {
     const ies = await this.repository.getIes(query);
     return ies;
   }
+  async getQuestionsTheme() {
+    const ies = await this.repository.getQuestionsTheme();
+    return ies;
+  }
 }
