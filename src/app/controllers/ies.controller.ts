@@ -21,7 +21,11 @@ export class IesController implements IController {
   }
 
   getIesList = async (req: Request, res: Response) => {
-    const result = await this.service.getIes()
+    const { uf, cod_ies } = req.query as any;
+    const result = await this.service.getIes({
+      uf,
+      cod_ies,
+    });
     res.send(result);
   };
 }

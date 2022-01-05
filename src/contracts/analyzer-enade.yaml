@@ -9,6 +9,15 @@ paths:
         - /ies
       description: >-
         Get the IES list with code!
+      parameters:
+        - in: query
+          name: uf
+          schema:
+            type: string
+        - in: query
+          name: cod_ies
+          schema:
+            type: integer
       responses:
         "200":
           description: Successful request.

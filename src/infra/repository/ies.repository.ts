@@ -7,10 +7,10 @@ export class IesRepository implements IIesRepository {
   constructor(model: Model<Document<IIes>>) {
     this.collection = model.collection;
   }
-  async getIes() {
+  async getIes(query: Object) {
     const ies: IIes[] = (await this.collection
       .find(
-        {},
+        query,
         {
           projection: {
             cod_ies: 1,

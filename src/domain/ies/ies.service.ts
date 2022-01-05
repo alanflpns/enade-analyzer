@@ -7,8 +7,11 @@ export class IesService {
     this.repository = iesRepository;
   }
 
-  async getIes() {
-    const ies = await this.repository.getIes();
+  async getIes({ uf, cod_ies }: { uf: string; cod_ies: number }) {
+    const query: any = {};
+    if (uf) query.uf = uf;
+    if (cod_ies) query.cod_ies = cod_ies;
+    const ies = await this.repository.getIes(query);
     return ies;
   }
 }
