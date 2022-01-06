@@ -21,10 +21,11 @@ export class MicrodataController implements IController {
   }
 
   getMicrodataResume = async (req: Request, res: Response) => {
-    const { uf, cod_ies } = req.query as any;
+    const { uf, cod_ies, ano } = req.query as any;
     const result = await this.service.getMicrodataResume({
       uf,
       cod_ies,
+      ano,
     });
     res.send(result);
   };

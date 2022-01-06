@@ -7,9 +7,9 @@ export class MicrodataRepository implements IMicrodataRepository {
   constructor(db: Connection) {
     this.db = db;
   }
-  async getMicrodataResume(query: Object): Promise<IMicrodata[]> {
+  async getMicrodataResume(query: Object, ano: string): Promise<IMicrodata[]> {
     const result = await this.db
-      .collection("microdata_enade_2017")
+      .collection(`microdata_enade_${ano}`)
       .aggregate([
         {
           $match: {
@@ -29,20 +29,20 @@ export class MicrodataRepository implements IMicrodataRepository {
         },
         {
           $lookup: {
-            from: "respostas_enade_2017",
+            from: `respostas_enade_${ano}`,
             localField: "_id",
             foreignField: "microdataId",
-            as: "respostas_2017",
+            as: "respostas",
           },
         },
         {
-          $unwind: "$respostas_2017",
+          $unwind: "$respostas",
         },
         {
           $group: {
             _id: {
-              questao: "$respostas_2017.questao",
-              resposta: "$respostas_2017.resposta",
+              questao: "$respostas.questao",
+              resposta: "$respostas.resposta",
             },
             count: {
               $sum: 1,
@@ -55,7 +55,7 @@ export class MicrodataRepository implements IMicrodataRepository {
         },
         {
           $lookup: {
-            from: "tema_questao_2017",
+            from: `tema_questao_${ano}`,
             localField: "_id.questao",
             foreignField: "questao",
             as: "temaObj",

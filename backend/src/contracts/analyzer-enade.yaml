@@ -64,6 +64,11 @@ paths:
           schema:
             type: string
         - in: query
+          name: ano
+          schema:
+            type: string
+          required: true
+        - in: query
           name: cod_ies
           schema:
             type: integer

@@ -1,5 +1,5 @@
 import { IMicrodata } from "./microdata.interface";
 
 export default interface IMicrodataRepository {
-  getMicrodataResume(query: Object): Promise<IMicrodata[]>;
+  getMicrodataResume(query: Object, ano: string): Promise<IMicrodata[]>;
 }
