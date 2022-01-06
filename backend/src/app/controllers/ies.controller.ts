@@ -30,7 +30,8 @@ export class IesController implements IController {
     res.send(result);
   };
   getQuestionsTheme = async (req: Request, res: Response) => {
-    const result = await this.service.getQuestionsTheme();
+    const { ano } = req.query as any;
+    const result = await this.service.getQuestionsTheme(ano);
     res.send(result);
   };
 }

@@ -33,6 +33,12 @@ paths:
         - /questions-theme
       description: >-
         Get the theme of questions!
+      parameters:
+        - in: query
+          name: ano
+          schema:
+            type: number
+          required: true
       responses:
         "200":
           description: Successful request.
