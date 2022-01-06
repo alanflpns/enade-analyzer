@@ -7,13 +7,14 @@ export class MicrodataRepository implements IMicrodataRepository {
   constructor(db: Connection) {
     this.db = db;
   }
-  async getMicrodataResume(query: Object, ano: string): Promise<IMicrodata[]> {
+  async getMicrodataResume(query: Object, ano: number): Promise<IMicrodata[]> {
     const result = await this.db
-      .collection(`microdata_enade_${ano}`)
+      .collection(`microdados`)
       .aggregate([
         {
           $match: {
             ...query,
+            NU_ANO: ano,
             //CO_GRUPO é o curso de sistemas de informação
             //TP_PR é o tipo de presença do aluno, código 555 significa que o resultado da prova dele é válido
             CO_GRUPO: 4006,
@@ -29,7 +30,7 @@ export class MicrodataRepository implements IMicrodataRepository {
         },
         {
           $lookup: {
-            from: `respostas_enade_${ano}`,
+            from: `respostas_enade`,
             localField: "_id",
             foreignField: "microdataId",
             as: "respostas",
@@ -48,10 +49,11 @@ export class MicrodataRepository implements IMicrodataRepository {
               $sum: 1,
             },
           },
-        },{
+        },
+        {
           $match: {
-            "_id.resposta": {$ne: undefined}
-          }
+            "_id.resposta": { $ne: undefined },
+          },
         },
         {
           $lookup: {

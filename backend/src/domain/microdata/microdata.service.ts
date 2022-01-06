@@ -17,11 +17,8 @@ export class MicrodataService {
   }: {
     uf: string;
     cod_ies: number;
-    ano: string;
+    ano: number;
   }) {
-    if (ano !== "2017" && ano !== "2014") {
-      throw Error("Apenas dados para 2014 ou 2017");
-    }
     const queryIes: any = {};
     if (uf) queryIes.uf = uf;
     if (cod_ies) queryIes.cod_ies = cod_ies;
