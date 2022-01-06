@@ -14,10 +14,7 @@ export class MicrodataRepository implements IMicrodataRepository {
         {
           $match: {
             ...query,
-            NU_ANO: ano,
-            //CO_GRUPO é o curso de sistemas de informação
             //TP_PR é o tipo de presença do aluno, código 555 significa que o resultado da prova dele é válido
-            CO_GRUPO: 4006,
             TP_PR_OB_CE: 555,
             TP_PR_GER: 555,
             TP_PRES: 555,
@@ -61,7 +58,7 @@ export class MicrodataRepository implements IMicrodataRepository {
           $lookup: {
             from: "tema_questao",
             let: {
-              ano: 2017,
+              ano: ano,
               questao: "$_id.questao",
             },
             pipeline: [

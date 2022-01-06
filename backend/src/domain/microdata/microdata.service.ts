@@ -24,8 +24,12 @@ export class MicrodataService {
     if (cod_ies) queryIes.cod_ies = cod_ies;
     const ies = await this.iesService.getIes(queryIes);
     const cod_ies_arr = ies.map((i) => i.cod_ies);
+
     const query = {
       CO_IES: { $in: cod_ies_arr },
+      NU_ANO: ano,
+      //CO_GRUPO é o curso de sistemas de informação
+      CO_GRUPO: 4006,
     };
     const result = await this.repository.getMicrodataResume(query, ano);
 
