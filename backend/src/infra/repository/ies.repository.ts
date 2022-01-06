@@ -9,10 +9,16 @@ export class IesRepository implements IIesRepository {
     this.collection = model.collection;
     this.db = model.db;
   }
-  async getQuestionsTheme(ano: number): Promise<any[]> {
+  async getQuestionsTheme(ano: number, CO_GRUPO: number): Promise<any[]> {
     const result: any = await this.db
-      .collection(`tema_questao_${ano}`)
+      .collection(`tema_questao`)
       .aggregate([
+        {
+          $match: {
+            ano,
+            CO_GRUPO,
+          },
+        },
         {
           $group: {
             _id: "$tema",
@@ -25,7 +31,7 @@ export class IesRepository implements IIesRepository {
             tema: "$_id",
             questions: 1,
             qtQuestions: 1,
-            _id: 0
+            _id: 0,
           },
         },
       ])

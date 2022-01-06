@@ -30,7 +30,7 @@ export class MicrodataRepository implements IMicrodataRepository {
         },
         {
           $lookup: {
-            from: `respostas_enade`,
+            from: "respostas_enade",
             localField: "_id",
             foreignField: "microdataId",
             as: "respostas",
@@ -52,14 +52,34 @@ export class MicrodataRepository implements IMicrodataRepository {
         },
         {
           $match: {
-            "_id.resposta": { $ne: undefined },
+            "_id.resposta": {
+              $ne: undefined,
+            },
           },
         },
         {
           $lookup: {
-            from: `tema_questao_${ano}`,
-            localField: "_id.questao",
-            foreignField: "questao",
+            from: "tema_questao",
+            let: {
+              ano: 2017,
+              questao: "$_id.questao",
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: ["$ano", "$$ano"],
+                      },
+                      {
+                        $eq: ["$questao", "$$questao"],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
             as: "temaObj",
           },
         },
@@ -86,7 +106,9 @@ export class MicrodataRepository implements IMicrodataRepository {
                 count: "$count",
               },
             },
-            total: { $sum: "$count" },
+            total: {
+              $sum: "$count",
+            },
           },
         },
       ])

@@ -31,7 +31,9 @@ export class IesController implements IController {
   };
   getQuestionsTheme = async (req: Request, res: Response) => {
     const { ano } = req.query as any;
-    const result = await this.service.getQuestionsTheme(ano);
+    //CO_GRUPO de Sistemas de informação
+    const CO_GRUPO = 4006;
+    const result = await this.service.getQuestionsTheme(ano, CO_GRUPO);
     res.send(result);
   };
 }

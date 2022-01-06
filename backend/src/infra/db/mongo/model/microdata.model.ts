@@ -3,10 +3,10 @@ import { IMicrodata } from "../../../../domain/microdata/interfaces/microdata.in
 
 const microdataSchema = new Schema(
   {},
-  { collection: "microdata_enade_2017", versionKey: false }
+  { collection: "microdados", versionKey: false }
 );
 
 export const MicrodataModel = model<Document<IMicrodata>>(
-  "microdata_enade_2017",
+  "microdados",
   microdataSchema
 );
