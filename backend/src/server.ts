@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import { ContextAsyncHooks } from "traceability";
 import { App } from "./app";
@@ -22,6 +23,7 @@ const app = new App({
   customizers: [swaggerAppCustomizer, validationAppCustomizer],
   database: DatabaseMongooseFactory.create(),
   middleWares: [
+    cors(),
     express.json(),
     express.urlencoded({ extended: true }),
     ContextAsyncHooks.getExpressMiddlewareTracking(),
