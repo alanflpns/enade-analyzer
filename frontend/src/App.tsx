@@ -1,213 +1,181 @@
-import { useEffect } from "react";
-import { VictoryChart, VictoryBar, VictoryAxis, VictoryLabel } from "victory";
+import { useEffect, useState } from "react";
+import {
+  Dropdown,
+  Segment,
+  Header,
+  Icon,
+  Form,
+  Loader,
+} from "semantic-ui-react";
+
+import {
+  VictoryChart,
+  VictoryBar,
+  VictoryAxis,
+  VictoryLabel,
+  VictoryTheme,
+  VictoryTooltip,
+} from "victory";
 import Requests from "./services/Requests";
 
+const iesDefault = 3183;
+
 function App() {
+  const [data, setData] = useState([]);
+  const [iesList, setIesList] = useState<any>([]);
+  const [currentIes, setCurrentIes] = useState<number>();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
+
   useEffect(() => {
-    getData();
+    getIes();
   }, []);
 
-  async function getData() {
-    try {
-      const response = await Requests.getData();
+  useEffect(() => {
+    if (iesList.length > 0) {
+      setCurrentIes(iesDefault);
+    }
+  }, [iesList]);
 
-      console.log(response);
+  useEffect(() => {
+    if (currentIes) {
+      getData();
+    }
+  }, [currentIes]);
+
+  async function getData() {
+    setIsLoadingData(true);
+
+    try {
+      const response = await Requests.getData("2017", currentIes!);
+
+      const newData: any = [];
+      response.data.forEach((item: any) => {
+        item.result
+          .filter((res: any) => res.resposta)
+          .map((res: any) => {
+            const newItem = {
+              ...res,
+              percent: Number(res.percent) * 100,
+              tema: item.tema,
+              label: `${item.tema} (${(Number(res.percent) * 100).toFixed(
+                2
+              )}%)`,
+            };
+            newData.push(newItem);
+          });
+      });
+
+      setData(newData);
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoadingData(false);
     }
   }
 
-  const data = [
-    {
-      result: [
-        { resposta: true, count: 12, percent: "0.545" },
-        { resposta: false, count: 10, percent: "0.455" },
-      ],
-      total: 22,
-      tema: "Arquitetura da informação",
-    },
-    {
-      result: [
-        { resposta: false, count: 14, percent: "0.636" },
-        { resposta: true, count: 8, percent: "0.364" },
-      ],
-      total: 22,
-      tema: "Redes de Computadores e Sistemas Distribuídos",
-    },
-    {
-      result: [{ resposta: true, count: 11, percent: "1.000" }],
-      total: 11,
-      tema: "Engenharia de Software",
-    },
-    {
-      result: [
-        { resposta: true, count: 7, percent: "0.636" },
-        { resposta: false, count: 4, percent: "0.364" },
-      ],
-      total: 11,
-      tema: "Algoritmos e Estruturas de Dados",
-    },
-    {
-      result: [
-        { resposta: false, count: 8, percent: "0.727" },
-        { resposta: true, count: 3, percent: "0.273" },
-      ],
-      total: 11,
-      tema: "Qualidade de Processo e Produto",
-    },
-    {
-      result: [
-        { resposta: false, count: 7, percent: "0.636" },
-        { resposta: true, count: 4, percent: "0.364" },
-      ],
-      total: 11,
-      tema: "Pesquisa Operacional",
-    },
-    {
-      result: [
-        { resposta: true, count: 9, percent: "0.409" },
-        { resposta: false, count: 13, percent: "0.591" },
-      ],
-      total: 22,
-      tema: "Gestão do Conhecimento",
-    },
-    {
-      result: [
-        { resposta: false, count: 2, percent: "0.182" },
-        { resposta: true, count: 9, percent: "0.818" },
-      ],
-      total: 11,
-      tema: "Modelagem de Sistemas de Informação",
-    },
-    {
-      result: [
-        { resposta: false, count: 8, percent: "0.727" },
-        { resposta: true, count: 3, percent: "0.273" },
-      ],
-      total: 11,
-      tema: "Arquitetura empresarial e da tecnologia da informação",
-    },
-    {
-      result: [
-        { resposta: false, count: 6, percent: "0.545" },
-        { resposta: true, count: 5, percent: "0.455" },
-      ],
-      total: 11,
-      tema: "Lógica Matemática e Matemática Discreta",
-    },
-    {
-      result: [
-        { resposta: false, count: 9, percent: "0.818" },
-        { resposta: true, count: 2, percent: "0.182" },
-      ],
-      total: 11,
-      tema: "Sistemas Operacionais",
-    },
-    {
-      result: [
-        { resposta: true, count: 5, percent: "0.455" },
-        { resposta: false, count: 6, percent: "0.545" },
-      ],
-      total: 11,
-      tema: "Informática e Sociedade",
-    },
-    {
-      result: [
-        { resposta: false, count: 6, percent: "0.545" },
-        { resposta: true, count: 5, percent: "0.455" },
-      ],
-      total: 11,
-      tema: "Fundamentos, Paradigmas e Linguagens de Programação;",
-    },
-    {
-      result: [
-        { resposta: true, count: 6, percent: "0.545" },
-        { resposta: false, count: 5, percent: "0.455" },
-      ],
-      total: 11,
-      tema: "Gerência de Projetos",
-    },
-    {
-      result: [
-        { resposta: false, count: 7, percent: "0.636" },
-        { resposta: true, count: 4, percent: "0.364" },
-      ],
-      total: 11,
-      tema: "Probabilidade e Estatística",
-    },
-    {
-      result: [
-        { resposta: false, count: 4, percent: "0.364" },
-        { resposta: true, count: 7, percent: "0.636" },
-      ],
-      total: 11,
-      tema: "Segurança e Auditoria de Sistemas",
-    },
-    {
-      result: [
-        { resposta: true, count: 8, percent: "0.727" },
-        { resposta: false, count: 3, percent: "0.273" },
-      ],
-      total: 11,
-      tema: "Gestão de Processos de Negócio",
-    },
-    {
-      result: [
-        { resposta: false, count: 6, percent: "0.545" },
-        { resposta: true, count: 5, percent: "0.455" },
-      ],
-      total: 11,
-      tema: "Interação Humano-Computador",
-    },
-    {
-      result: [
-        { resposta: true, count: 1, percent: "0.091" },
-        { resposta: false, count: 10, percent: "0.909" },
-      ],
-      total: 11,
-      tema: "Arquitetura e Organização de Computadores",
-    },
-  ];
+  async function getIes() {
+    setIsLoading(true);
+    try {
+      const response = await Requests.getIes();
 
-  const newData: any = [];
-  data.forEach((item) => {
-    item.result
-      .filter((res) => res.resposta)
-      .map((res) => {
-        const newItem = {
-          ...res,
-          percent: Number(res.percent) * 100,
-          tema: item.tema,
-        };
-        newData.push(newItem);
-      });
-  });
+      const newIes = response.data.map((ies: any) => ({
+        key: ies.cod_ies,
+        text: `${ies.sigla !== "-" ? ies.sigla : ""} / ${ies.municipio} - ${
+          ies.uf
+        }`,
+        value: ies.cod_ies,
+      }));
 
-  return (
-    <div>
-      <div
-        style={{
-          width: 600,
-        }}
-      >
-        <VictoryChart>
+      setIesList(newIes);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function renderChart() {
+    return (
+      <Segment style={{ width: 500 }}>
+        <VictoryChart
+          animate={{ duration: 500 }}
+          theme={VictoryTheme.material}
+          padding={{ left: 70, bottom: 350, top: 10, right: 50 }}
+          height={600}
+          width={400}
+        >
           <VictoryAxis
             crossAxis
-            height={300}
             tickLabelComponent={
               <VictoryLabel
-                angle={-60}
+                angle={-80}
                 textAnchor="end"
                 dx={5}
                 dy={-10}
-                style={{ fontSize: 10, zIndex: 5 }}
+                labelPlacement="vertical"
               />
             }
           />
           <VictoryAxis dependentAxis />
-          <VictoryBar data={newData} x="tema" y="percent" />
+          <VictoryBar
+            data={data}
+            x="tema"
+            y="percent"
+            labelComponent={<VictoryTooltip style={{ fontSize: 10 }} />}
+          />
         </VictoryChart>
+      </Segment>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", padding: 20, flexDirection: "column" }}>
+      <div>
+        <Header as="h2" textAlign="center">
+          Análise ENADE
+        </Header>
       </div>
+
+      <div>
+        <Form>
+          <Form.Group widths="equal">
+            <Form.Field>
+              <label>Filtro</label>
+              <Form.Select
+                options={iesList}
+                search
+                selection
+                loading={isLoading}
+                value={currentIes}
+                placeholder="Selecione um campus"
+                disabled={isLoading}
+                onChange={(ev, data) => setCurrentIes(data.value as number)}
+              />
+            </Form.Field>
+          </Form.Group>
+        </Form>
+      </div>
+
+      {iesList.length > 0 ? (
+        <Segment loading={isLoadingData}>
+          {data.length > 0 ? (
+            renderChart()
+          ) : (
+            <Segment>
+              <Header as="h2" icon textAlign="center">
+                <Icon name="folder open outline" />
+                Infelizmente nenhum dado foi encontrado
+              </Header>
+            </Segment>
+          )}
+        </Segment>
+      ) : (
+        <Header as="h2" icon textAlign="center">
+          <Loader active>Carregando dados...</Loader>
+        </Header>
+      )}
     </div>
   );
 }
