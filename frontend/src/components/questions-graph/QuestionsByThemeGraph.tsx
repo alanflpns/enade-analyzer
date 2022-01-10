@@ -25,89 +25,66 @@ function QuestionsGraph() {
   const chart = useCallback(
     (year: string, questionsByTheme: QuestionsByTheme[]) => {
       return (
-        <VictoryChart
-          animate={{ duration: 500 }}
-          theme={VictoryTheme.material}
-          padding={{ left: 60, bottom: 20, top: 20, right: 0 }}
-          height={400}
-          width={200}
-        >
-          <VictoryLabel
-            text={`Nº de questões por tema no ano de (${year})`}
-            x={100}
-            y={10}
-            textAnchor="middle"
-            style={{ fill: "#000", fontSize: 6 }}
-          />
-          <VictoryAxis
-            crossAxis
-            tickLabelComponent={
-              <VictoryLabel
-                style={{ fontSize: 4 }}
-                textAnchor="end"
-                labelPlacement="perpendicular"
-              />
-            }
-            tickFormat={(tick: string) => {
-              // This functions divide the tema in a lot of parts to take up less space
-              const words = tick.split(" ");
+        <div style={{ width: 500 }}>
+          <VictoryChart
+            animate={{ duration: 500 }}
+            theme={VictoryTheme.material}
+            padding={{ left: 70, bottom: 350, top: 20, right: 50 }}
+            height={600}
+            width={400}
+          >
+            <VictoryLabel
+              text={`Nº de questões por tema no ano de (${year})`}
+              x={200}
+              y={10}
+              textAnchor="middle"
+              style={{ fill: "#000", fontSize: 10 }}
+            />
 
-              const wordsString = words.reduce(
-                (prevValue, curValue, curIndex, array) => {
-                  const lastIndexWordBreak = prevValue.lastIndexOf("\n");
-                  const prevValueValidated =
-                    prevValue.substring(lastIndexWordBreak);
-                  const newValueValidated = `${prevValueValidated} ${curValue}`;
+            <VictoryAxis
+              crossAxis
+              tickLabelComponent={
+                <VictoryLabel
+                  angle={-80}
+                  textAnchor="end"
+                  dx={5}
+                  dy={-10}
+                  style={{ fontSize: 12 }}
+                  labelPlacement="vertical"
+                />
+              }
+            />
+            <VictoryAxis
+              dependentAxis
+              tickFormat={(tick) => {
+                if (String(tick).indexOf(".5") !== -1) {
+                  return "";
+                }
 
-                  if (newValueValidated.length > 30) {
-                    return `${prevValue}\n${curValue}`;
-                  }
-
-                  return `${prevValue} ${curValue}`;
-                },
-                ""
-              );
-              return wordsString;
-            }}
-            minDomain={0}
-          />
-          <VictoryAxis
-            dependentAxis
-            label="Nº de questões"
-            style={{
-              axis: {
-                stroke: "transparent",
-              },
-              tickLabels: {
-                fill: "#000",
-                fontSize: 4,
-              },
-              axisLabel: {
-                fill: "#000",
-                padding: 20,
-                fontSize: 4,
-                fontStyle: "italic",
-              },
-            }}
-          />
-
-          <VictoryBar
-            horizontal
-            data={questionsByTheme}
-            x="tema"
-            y="qtQuestions"
-            labelComponent={
-              <VictoryTooltip style={{ fontSize: 2 }} constrainToVisibleArea />
-            }
-            labels={(point) =>
-              `${point.datum.tema}: ${point.datum.qtQuestions} ${
-                point.datum.qtQuestions === 1 ? "questão" : "questões"
-              }`
-            }
-          />
-        </VictoryChart>
+                return String(tick).replace(".0", "");
+              }}
+            />
+            <VictoryBar
+              data={questionsByTheme}
+              x="tema"
+              y="qtQuestions"
+              labelComponent={
+                <VictoryTooltip
+                  constrainToVisibleArea
+                  style={{ fontSize: 10 }}
+                />
+              }
+              labels={(point) =>
+                `${point.datum.tema}: ${point.datum.qtQuestions} ${
+                  point.datum.qtQuestions === 1 ? "questão" : "questões"
+                }`
+              }
+            />
+          </VictoryChart>
+        </div>
       );
     },
+
     []
   );
 
@@ -127,14 +104,12 @@ function QuestionsGraph() {
     return <div>Infelizmente nenhum dado foi encontrado 🙁</div>;
   }
 
-  console.log(Object.entries(questionsByTheme));
-
   return (
-    <Segment>
-      {Object.keys(questionsByTheme).map((key) =>
-        chart(key, questionsByTheme[key as Year])
-      )}
-    </Segment>
+    <div>
+      {Object.keys(questionsByTheme).map((key) => (
+        <Segment>{chart(key, questionsByTheme[key as Year])}</Segment>
+      ))}
+    </div>
   );
 }
 
