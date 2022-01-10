@@ -8,6 +8,7 @@ import {
   VictoryTooltip,
 } from "victory";
 import { IDataGraph, IES } from "../../App";
+import { DataChart } from "../../types";
 
 interface Props {
   isLoadingData: boolean;
@@ -24,7 +25,7 @@ function BarGraph({
   dataUf,
   currentIesObj,
 }: Props) {
-  function renderChart(title: string, data: any) {
+  function renderChart(title: string, data: DataChart[]) {
     return (
       <Segment
         style={{ width: 500 }}
