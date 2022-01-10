@@ -1,8 +1,14 @@
 import AxiosApi from "./AxiosApi";
 
 const Requests = {
-  getData: () => {
-    const request = AxiosApi.get("/result-enade-general?ano=2017&cod_ies=3183");
+  getData: (year: string, ies: number) => {
+    const request = AxiosApi.get(
+      `/result-enade-general?ano=${year}&cod_ies=${ies}`
+    );
+    return request;
+  },
+  getIes: () => {
+    const request = AxiosApi.get(`/ies`);
     return request;
   },
 };
