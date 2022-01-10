@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Dropdown,
-  Segment,
-  Header,
-  Icon,
-  Form,
-  Loader,
-} from "semantic-ui-react";
+import { Segment, Header, Form } from "semantic-ui-react";
 
 import {
   VictoryChart,
@@ -16,9 +9,10 @@ import {
   VictoryTheme,
   VictoryTooltip,
 } from "victory";
+import QuestionsGraph from "./components/questions-graph/QuestionsByThemeGraph";
+import { YEARS } from "./constants";
 import Requests from "./services/Requests";
 
-const YEARS = ["2014", "2017"];
 interface IData {
   year: string;
   result: any;
@@ -208,11 +202,15 @@ function App() {
           </Form.Group>
         </Form>
       </div>
-      
+
+      <Segment>
+        <QuestionsGraph />
+      </Segment>
 
       {dataGeral.map((data) => renderChart(`${data.year} Geral`, data.result))}
       {dataIes.map((data) => renderChart(`${data.year} Ies`, data.result))}
       {dataUf.map((data) => renderChart(`${data.year} Uf`, data.result))}
+
       {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         {renderChart("2014 Geral", data2014Geral)} */}
       {/* {currentIes && (
@@ -232,6 +230,9 @@ function App() {
         )} */}
       {/* </div> */}
       {/* {iesList.length > 0 ? (
+      
+
+      {iesList.length > 0 ? (
         <Segment loading={isLoadingData}>
           {data.length > 0 ? (
             renderChart2014()

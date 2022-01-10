@@ -12,6 +12,10 @@ const Requests = {
     const request = AxiosApi.get(`/ies`);
     return request;
   },
+  getQuestionsByTheme: (year: string) => {
+    const request = AxiosApi.get(`/questions-theme?ano=${year}`);
+    return request;
+  },
 };
 
 export default Requests;
