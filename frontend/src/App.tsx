@@ -9,9 +9,10 @@ import {
   VictoryTheme,
   VictoryTooltip,
 } from "victory";
+import QuestionsGraph from "./components/questions-graph/QuestionsByThemeGraph";
+import { YEARS } from "./constants";
 import Requests from "./services/Requests";
 
-const YEARS = ["2014", "2017"];
 interface IData {
   year: string;
   result: any;
@@ -268,6 +269,10 @@ function App() {
           <Loader active>Carregando dados...</Loader>
         </Header>
       )}
+
+      <Segment>
+        <QuestionsGraph />
+      </Segment>
     </div>
   );
 }

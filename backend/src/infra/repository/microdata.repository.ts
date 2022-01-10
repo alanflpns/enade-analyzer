@@ -108,6 +108,9 @@ export class MicrodataRepository implements IMicrodataRepository {
             },
           },
         },
+        {
+          $sort: { _id: 1 },
+        },
       ])
       .toArray();
     return result as any;

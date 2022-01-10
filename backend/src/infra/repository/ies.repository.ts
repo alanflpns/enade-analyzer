@@ -34,6 +34,11 @@ export class IesRepository implements IIesRepository {
             _id: 0,
           },
         },
+        {
+          $sort: {
+            tema: 1,
+          },
+        },
       ])
       .toArray();
     return result;
