@@ -1,9 +1,10 @@
+import { stringifyQueryString } from "../helpers/FnUtils";
 import AxiosApi from "./AxiosApi";
 
 const Requests = {
-  getData: (year: string, ies: number) => {
+  getData: (ano: string, cod_ies?: number, uf?: string) => {
     const request = AxiosApi.get(
-      `/result-enade-general?ano=${year}&cod_ies=${ies}`
+      `/result-enade-general?${stringifyQueryString({ ano, cod_ies, uf })}`
     );
     return request;
   },

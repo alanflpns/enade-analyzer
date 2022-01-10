@@ -18,11 +18,26 @@ import {
 } from "victory";
 import Requests from "./services/Requests";
 
-const iesDefault = 3183;
+const YEARS = ["2014", "2017"];
+interface IData {
+  year: string;
+  result: any;
+}
+
+interface IES {
+  cod_ies: number;
+  sigla: string;
+  municipio: string;
+  uf: string;
+}
 
 function App() {
-  const [data, setData] = useState([]);
-  const [iesList, setIesList] = useState<any>([]);
+  const [dataGeral, setDataGeral] = useState<IData[]>([]);
+  const [dataIes, setDataIes] = useState<IData[]>([]);
+  const [dataUf, setDataUf] = useState<IData[]>([]);
+
+  const [iesList, setIesList] = useState<IES[]>([]);
+  const [iesOptions, setIesOptions] = useState([]);
   const [currentIes, setCurrentIes] = useState<number>();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -30,13 +45,8 @@ function App() {
 
   useEffect(() => {
     getIes();
+    getData();
   }, []);
-
-  useEffect(() => {
-    if (iesList.length > 0) {
-      setCurrentIes(iesDefault);
-    }
-  }, [iesList]);
 
   useEffect(() => {
     if (currentIes) {
@@ -44,30 +54,69 @@ function App() {
     }
   }, [currentIes]);
 
+  function createDataChart(response: any) {
+    const newData: any = [];
+    response.forEach((item: any) => {
+      item.result
+        .filter((res: any) => res.resposta)
+        .map((res: any) => {
+          const newItem = {
+            ...res,
+            percent: Number(res.percent) * 100,
+            tema: item.tema,
+            label: `${item.tema} (${(Number(res.percent) * 100).toFixed(2)}%)`,
+          };
+
+          newData.push(newItem);
+        });
+    });
+
+    return newData;
+  }
+
   async function getData() {
     setIsLoadingData(true);
 
     try {
-      const response = await Requests.getData("2017", currentIes!);
+      if (currentIes) {
+        const promisesIes = YEARS.map((year) =>
+          Requests.getData(year, currentIes)
+        );
+        const promisesUf = YEARS.map((year) =>
+          Requests.getData(
+            year,
+            undefined,
+            iesList.find((ies) => ies.cod_ies === currentIes)!.uf
+          )
+        );
 
-      const newData: any = [];
-      response.data.forEach((item: any) => {
-        item.result
-          .filter((res: any) => res.resposta)
-          .map((res: any) => {
-            const newItem = {
-              ...res,
-              percent: Number(res.percent) * 100,
-              tema: item.tema,
-              label: `${item.tema} (${(Number(res.percent) * 100).toFixed(
-                2
-              )}%)`,
-            };
-            newData.push(newItem);
-          });
-      });
+        const responseIes = await Promise.all(promisesIes);
+        const responseUf = await Promise.all(promisesUf);
 
-      setData(newData);
+        setDataIes(
+          responseIes.map((resp, index) => ({
+            year: YEARS[index],
+            result: createDataChart(resp.data),
+          }))
+        );
+        setDataUf(
+          responseUf.map((resp, index) => ({
+            year: YEARS[index],
+            result: createDataChart(resp.data),
+          }))
+        );
+      } else {
+        const promises = YEARS.map((year) => Requests.getData(year));
+
+        const response = await Promise.all(promises);
+
+        setDataGeral(
+          response.map((resp, index) => ({
+            year: YEARS[index],
+            result: createDataChart(resp.data),
+          }))
+        );
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -78,9 +127,9 @@ function App() {
   async function getIes() {
     setIsLoading(true);
     try {
-      const response = await Requests.getIes();
+      const response = (await Requests.getIes()).data;
 
-      const newIes = response.data.map((ies: any) => ({
+      const newIes = response.map((ies: any) => ({
         key: ies.cod_ies,
         text: `${ies.sigla !== "-" ? ies.sigla : ""} / ${ies.municipio} - ${
           ies.uf
@@ -88,7 +137,8 @@ function App() {
         value: ies.cod_ies,
       }));
 
-      setIesList(newIes);
+      setIesList(response);
+      setIesOptions(newIes);
     } catch (err) {
       console.log(err);
     } finally {
@@ -96,9 +146,10 @@ function App() {
     }
   }
 
-  function renderChart() {
+  function renderChart(title: string, data: any) {
     return (
       <Segment style={{ width: 500 }}>
+        <Header>{title}</Header>
         <VictoryChart
           animate={{ duration: 500 }}
           theme={VictoryTheme.material}
@@ -142,9 +193,9 @@ function App() {
         <Form>
           <Form.Group widths="equal">
             <Form.Field>
-              <label>Filtro</label>
+              <label>Campus</label>
               <Form.Select
-                options={iesList}
+                options={iesOptions}
                 search
                 selection
                 loading={isLoading}
@@ -157,11 +208,33 @@ function App() {
           </Form.Group>
         </Form>
       </div>
+      
 
-      {iesList.length > 0 ? (
+      {dataGeral.map((data) => renderChart(`${data.year} Geral`, data.result))}
+      {dataIes.map((data) => renderChart(`${data.year} Ies`, data.result))}
+      {dataUf.map((data) => renderChart(`${data.year} Uf`, data.result))}
+      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {renderChart("2014 Geral", data2014Geral)} */}
+      {/* {currentIes && (
+          <>
+            {renderChart("2014 Ies", data2014Ies)}
+            {renderChart("2014 Estado", data2014Uf)}
+          </>
+        )} */}
+      {/* </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {renderChart("2017 Geral", data2017Geral)} */}
+      {/* {currentIes && (
+          <>
+            {renderChart("2017 Ies", data2017Ies)}
+            {renderChart("2017 Estado", data2017Uf)}
+          </>
+        )} */}
+      {/* </div> */}
+      {/* {iesList.length > 0 ? (
         <Segment loading={isLoadingData}>
           {data.length > 0 ? (
-            renderChart()
+            renderChart2014()
           ) : (
             <Segment>
               <Header as="h2" icon textAlign="center">
@@ -175,7 +248,7 @@ function App() {
         <Header as="h2" icon textAlign="center">
           <Loader active>Carregando dados...</Loader>
         </Header>
-      )}
+      )} */}
     </div>
   );
 }
