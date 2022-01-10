@@ -1,12 +1,5 @@
-import { useEffect, useState } from "react";
-import {
-  Dropdown,
-  Segment,
-  Header,
-  Icon,
-  Form,
-  Loader,
-} from "semantic-ui-react";
+import { useEffect, useMemo, useState } from "react";
+import { Segment, Header, Form, Loader } from "semantic-ui-react";
 
 import {
   VictoryChart,
@@ -54,6 +47,11 @@ function App() {
     }
   }, [currentIes]);
 
+  const currentIesObj = useMemo(
+    () => iesList.find((ies) => ies.cod_ies === currentIes),
+    [currentIes]
+  );
+
   function createDataChart(response: any) {
     const newData: any = [];
     response.forEach((item: any) => {
@@ -75,19 +73,15 @@ function App() {
   }
 
   async function getData() {
-    setIsLoadingData(true);
-
     try {
       if (currentIes) {
+        setIsLoadingData(true);
+
         const promisesIes = YEARS.map((year) =>
           Requests.getData(year, currentIes)
         );
         const promisesUf = YEARS.map((year) =>
-          Requests.getData(
-            year,
-            undefined,
-            iesList.find((ies) => ies.cod_ies === currentIes)!.uf
-          )
+          Requests.getData(year, undefined, currentIesObj?.uf)
         );
 
         const responseIes = await Promise.all(promisesIes);
@@ -148,7 +142,10 @@ function App() {
 
   function renderChart(title: string, data: any) {
     return (
-      <Segment style={{ width: 500 }}>
+      <Segment
+        style={{ width: 500 }}
+        loading={title !== "Brasil" && isLoadingData}
+      >
         <Header>{title}</Header>
         <VictoryChart
           animate={{ duration: 500 }}
@@ -208,47 +205,69 @@ function App() {
           </Form.Group>
         </Form>
       </div>
-      
 
-      {dataGeral.map((data) => renderChart(`${data.year} Geral`, data.result))}
-      {dataIes.map((data) => renderChart(`${data.year} Ies`, data.result))}
-      {dataUf.map((data) => renderChart(`${data.year} Uf`, data.result))}
-      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {renderChart("2014 Geral", data2014Geral)} */}
-      {/* {currentIes && (
-          <>
-            {renderChart("2014 Ies", data2014Ies)}
-            {renderChart("2014 Estado", data2014Uf)}
-          </>
-        )} */}
-      {/* </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {renderChart("2017 Geral", data2017Geral)} */}
-      {/* {currentIes && (
-          <>
-            {renderChart("2017 Ies", data2017Ies)}
-            {renderChart("2017 Estado", data2017Uf)}
-          </>
-        )} */}
-      {/* </div> */}
-      {/* {iesList.length > 0 ? (
-        <Segment loading={isLoadingData}>
-          {data.length > 0 ? (
-            renderChart2014()
-          ) : (
-            <Segment>
-              <Header as="h2" icon textAlign="center">
-                <Icon name="folder open outline" />
-                Infelizmente nenhum dado foi encontrado
-              </Header>
-            </Segment>
-          )}
-        </Segment>
+      {dataGeral.length > 0 ? (
+        <>
+          <div>
+            <Header>2017</Header>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+                gap: 10,
+              }}
+            >
+              {renderChart(`Brasil`, dataGeral[1].result)}
+              {dataIes.length > 0 && dataUf.length > 0 && (
+                <>
+                  {renderChart(
+                    `Estado - ${currentIesObj?.uf}`,
+                    dataUf[1].result
+                  )}
+                  {renderChart(
+                    `Instituição - ${currentIesObj?.sigla}`,
+                    dataIes[1].result
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+          <div
+            style={{
+              marginTop: 20,
+            }}
+          >
+            <Header>2014</Header>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+                gap: 10,
+              }}
+            >
+              {renderChart(`Brasil`, dataGeral[0].result)}
+              {dataIes.length > 0 && dataUf.length > 0 && (
+                <>
+                  {renderChart(
+                    `Estado - ${currentIesObj?.uf}`,
+                    dataUf[0].result
+                  )}
+                  {renderChart(
+                    `Instituição - ${currentIesObj?.sigla}`,
+                    dataIes[0].result
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </>
       ) : (
         <Header as="h2" icon textAlign="center">
           <Loader active>Carregando dados...</Loader>
         </Header>
-      )} */}
+      )}
     </div>
   );
 }
