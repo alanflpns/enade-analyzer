@@ -28,22 +28,22 @@ function QuestionsGraph() {
         <VictoryChart
           animate={{ duration: 500 }}
           theme={VictoryTheme.material}
-          padding={{ left: 100, bottom: 50, top: 30, right: 50 }}
-          height={600}
-          width={400}
+          padding={{ left: 60, bottom: 20, top: 20, right: 0 }}
+          height={400}
+          width={200}
         >
           <VictoryLabel
             text={`Nº de questões por tema no ano de (${year})`}
-            x={225}
+            x={100}
             y={10}
             textAnchor="middle"
-            style={{ fill: "#000", fontSize: 10 }}
+            style={{ fill: "#000", fontSize: 6 }}
           />
           <VictoryAxis
             crossAxis
             tickLabelComponent={
               <VictoryLabel
-                style={{ fontSize: 6 }}
+                style={{ fontSize: 4 }}
                 textAnchor="end"
                 labelPlacement="perpendicular"
               />
@@ -74,19 +74,18 @@ function QuestionsGraph() {
           <VictoryAxis
             dependentAxis
             label="Nº de questões"
-            scale={{ y: "time" }}
             style={{
               axis: {
                 stroke: "transparent",
               },
               tickLabels: {
                 fill: "#000",
-                fontSize: 8,
+                fontSize: 4,
               },
               axisLabel: {
                 fill: "#000",
-                padding: 30,
-                fontSize: 8,
+                padding: 20,
+                fontSize: 4,
                 fontStyle: "italic",
               },
             }}
@@ -98,7 +97,7 @@ function QuestionsGraph() {
             x="tema"
             y="qtQuestions"
             labelComponent={
-              <VictoryTooltip style={{ fontSize: 6 }} constrainToVisibleArea />
+              <VictoryTooltip style={{ fontSize: 2 }} constrainToVisibleArea />
             }
             labels={(point) =>
               `${point.datum.tema}: ${point.datum.qtQuestions} ${
